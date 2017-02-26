@@ -1,20 +1,20 @@
 import argparse
 import base64
-from datetime import datetime
 import os
 import shutil
-
-import numpy as np
-import socketio
-import eventlet
-import eventlet.wsgi
-from PIL import Image
-from flask import Flask
+from datetime import datetime
 from io import BytesIO
 
-from keras.models import load_model
 import h5py
+import numpy as np
+from flask import Flask
+from PIL import Image
+
+import eventlet
+import eventlet.wsgi
+import socketio
 from keras import __version__ as keras_version
+from keras.models import load_model
 
 sio = socketio.Server()
 app = Flask(__name__)
