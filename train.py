@@ -99,18 +99,8 @@ def fit_sync(model, data_dirs=[], epochs=5, save_path=DEFAULT_MODEL_PATH):
 # Load data and train model
 if __name__ == '__main__':
 
-    # model = build_model_lenet(
-    #     # dropout=0,
-    #     # reg_beta=5e-4
-    # )
-    model = build_model_nvidia(
-        # dropout=0,
-        # reg_beta=5e-4
-    )
-    # model = build_model_inception()
-    model.summary()
-
-    epochs = 10
+    # Params
+    epochs = 3
 
     # Get logs
     data_dirs = [
@@ -119,11 +109,34 @@ if __name__ == '__main__':
         'data-recovery',
     ]
 
-    # Train
-    if sys.argv and len(sys.argv) > 1:
-        save_path = sys.argv[1]
-    else:
-        save_path = DEFAULT_MODEL_PATH
+    # Run different combination of models
+    for _model in ['lenet', 'nvidia']:
 
-    fit_async(model, data_dirs, epochs=epochs, save_path=save_path)
-    # fit_sync(model, data_dirs, epochs=epochs, save_path=save_path)
+        for dropout in [0, 0.25, 0.5]:
+
+            for reg_beta in [0, 5e-4]:
+
+                if _model == 'lenet':
+                    model = build_model_lenet(
+                        dropout=dropout,
+                        reg_beta=reg_beta
+                    )
+                elif _model == 'nvidia':
+                    model = build_model_nvidia(
+                        dropout=dropout,
+                        reg_beta=reg_beta
+                    )
+
+                save_path = '{}_{}_{}.h5'.format(
+                    _model, dropout, reg_beta
+                )
+                print('Training {} model with params'.format(_model))
+                print('- dropout: {}'.format(dropout))
+                print('- reg_beta: {}'.format(reg_beta))
+                print('- save_path: {}'.format(save_path))
+                model.summary
+
+                fit_async(
+                    model, data_dirs,
+                    epochs=epochs, save_path=save_path
+                )
