@@ -24,7 +24,7 @@ def build_model():
     model = Sequential()
 
     model.add(Lambda(_normalize,
-               input_shape=(160, 320, 3)))
+                     input_shape=INPUT_SHAPE))
     model.add(Flatten())
     model.add(Dense(1))
 
