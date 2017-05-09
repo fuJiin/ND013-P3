@@ -1,2 +1,4 @@
 *.DS_Store
-data/**/*
+data*/**/*
+__pycache__/**/*
+model_*.h5
