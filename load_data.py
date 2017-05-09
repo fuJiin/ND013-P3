@@ -74,12 +74,19 @@ def extract_data(filepath=DEFAULT_LOG_PATH, header=False):
         lines = lines[1:]
 
     for line in lines:
-        filepath = source_to_filepath(line[0])
-        image = cv2.imread(filepath)
-        images.append(image)
 
-        measurement = float(line[3])
-        measurements.append(measurement)
+        # Get center, left, right images
+        for i in range(3):
+            filepath = source_to_filepath(line[i])
+            image = cv2.imread(filepath)
+            images.append(image)
+
+            # Correct steering angle
+            correction = 0.2
+            measurement = float(line[3])
+            measurements.append(measurement)
+            measurements.append(measurement + correction)
+            measurements.append(measurement - correction)
 
     images, measurements = add_flip_data(images, measurements)
     return images, measurements
@@ -103,4 +110,9 @@ def add_flip_data(X_train, y_train):
 def source_to_filepath(source_path):
     """Converts source parts to filepath"""
     source_parts = source_path.split('/')
-    return './{}'.format('/'.join(source_parts[-3:]))
+
+    # Handle default data
+    if len(source_parts) < 3:
+        return './data/{}'.format(source_path)
+    else:
+        return './{}'.format('/'.join(source_parts[-3:]))
